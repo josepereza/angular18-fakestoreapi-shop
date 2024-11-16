@@ -1,12 +1,24 @@
-<p>list works!</p>
-<ul>
-    @for (item of products; track $index) {
-            <li>{{item.title}}</li>
-
-    }
-</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
 <div class="container">
-    @for (item of products; track $index) {
+
+  <div>
+   
+    <select class="select-css" name="miselect" [formControl]="categoria">
+      <option [value]="'all'">Elige Categoria</option>
+
+      <option [value]="'all'">Todos</option>
+
+      @for (item of categorias(); track $index) {
+      <option [value]="item" >{{item}}</option>
+      }
+    </select>
+  </div>
+  
+    @for (item of products; track item.id) {
 
     <div class="card">
     <img src="{{item.image}}" alt="Avatar" style="width:80%">
@@ -16,6 +28,7 @@
     </div>
     <div class="botones">
         <button class="button button1">Agregar</button>
+        <a [routerLink]="['/detalles', item.id]" routerLinkActive="router-link-active"  class="button button2">Detalles</a>
     </div>
   </div>
 }

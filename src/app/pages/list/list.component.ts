@@ -1,24 +1,48 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  Injector,
+  OnInit,
+  signal,
+  Signal,
+} from '@angular/core';
 import { ProductsService } from '../../services/products.service';
 import { Product } from '../../interfaces/product';
+import { RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, NgFor, ReactiveFormsModule],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.css'
+  styleUrl: './list.component.css',
 })
 export class ListComponent implements OnInit {
+  productService = inject(ProductsService);
+  products: Product[] = [];
+  categorias!: Signal<string[] | undefined>;
+  injector = inject(Injector);
+  categoria = new FormControl('all');
   ngOnInit(): void {
+    this.categoria.valueChanges.subscribe(data=>{
+      this.loadProducts()
+    })
+    this.categorias = toSignal(this.productService.getCategories(), {
+      injector: this.injector,
+    });
+
     this.loadProducts();
   }
-  productService=inject(ProductsService)
-  products:Product[]=[]
+  loadProducts() {
+    this.productService.getProductsByCategory(this.categoria.value).subscribe((data) => {
+      this.products = data;
+    });
+  }
+  filtered($event:any){
+    console.log($event.value)
 
-  loadProducts(){
-    this.productService.getProducts().subscribe(data=>{
-      this.products=data;
-    })
   }
 }
