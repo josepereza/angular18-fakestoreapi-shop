@@ -19,8 +19,10 @@ export class DetailsComponent implements OnInit {
     miProducto2!:Signal<Product | undefined> 
     injector=inject(Injector)   
   ngOnInit(): void {
+    //Una forma de hacerlo
   this.miProducto2! = toSignal(this.productService.getProductsById(this.id()),{injector: this.injector});
-
+  
+    //Otra forma de hacerlo 
     this.productService.getProductsById(this.id()).subscribe(producto=>{
       console.log(producto)
       this.miProducto=producto
